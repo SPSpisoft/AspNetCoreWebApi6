@@ -13,6 +13,7 @@ namespace AspNetCoreWebApi6
             builder.Services.AddDbContext<MovieContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("MovieContext")));
 
+            builder.Services.AddRazorPages();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -23,17 +24,40 @@ namespace AspNetCoreWebApi6
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+
+            //app.UseHttpsRedirection();
+
+            //app.UseAuthorization();
+
+            //app.MapControllers();
+
+            //app.Run();
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
+            app.UseRouting();
 
             app.UseAuthorization();
 
-            app.MapControllers();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+                endpoints.MapControllers();
+            });
 
             app.Run();
+
         }
     }
 }
